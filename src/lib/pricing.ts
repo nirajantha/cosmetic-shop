@@ -1,27 +1,44 @@
-import type { Offer, Product } from "@/generated/prisma/client";
+/** Anything that can be coerced with Number(): a plain number, a numeric string, or Prisma's Decimal. */
+type Numeric = number | string | { toString(): string };
 
-export type PricingOffer = Pick<
-  Offer,
-  "id" | "title" | "type" | "value" | "startDate" | "endDate" | "isActive" | "categoryId" | "brandId"
-> & { productIds?: string[] };
+export interface PricingOffer {
+  id: string;
+  title: string;
+  type: "PERCENTAGE" | "FIXED_AMOUNT";
+  value: Numeric;
+  startDate: Date;
+  endDate: Date;
+  isActive: boolean;
+  categoryId: string | null;
+  brandId: string | null;
+  productIds?: string[];
+}
+
+export interface PricingProduct {
+  id: string;
+  price: Numeric;
+  salePrice: Numeric | null;
+  brandId: string;
+  categoryId: string;
+}
 
 export type OfferStatus = "ACTIVE" | "SCHEDULED" | "EXPIRED";
 
-export function getOfferStatus(offer: Pick<Offer, "isActive" | "startDate" | "endDate">, now = new Date()): OfferStatus {
+export function getOfferStatus(
+  offer: { isActive: boolean; startDate: Date; endDate: Date },
+  now = new Date()
+): OfferStatus {
   if (!offer.isActive) return "EXPIRED";
   if (now < offer.startDate) return "SCHEDULED";
   if (now > offer.endDate) return "EXPIRED";
   return "ACTIVE";
 }
 
-export function isOfferLive(offer: Pick<Offer, "isActive" | "startDate" | "endDate">, now = new Date()): boolean {
+export function isOfferLive(offer: { isActive: boolean; startDate: Date; endDate: Date }, now = new Date()): boolean {
   return getOfferStatus(offer, now) === "ACTIVE";
 }
 
-function offerAppliesToProduct(
-  offer: PricingOffer,
-  product: Pick<Product, "id" | "brandId" | "categoryId">
-): boolean {
+function offerAppliesToProduct(offer: PricingOffer, product: Pick<PricingProduct, "id" | "brandId" | "categoryId">): boolean {
   if (offer.productIds?.includes(product.id)) return true;
   if (offer.brandId && offer.brandId === product.brandId) return true;
   if (offer.categoryId && offer.categoryId === product.categoryId) return true;
@@ -60,7 +77,7 @@ export interface EffectivePrice {
  * or with the sale price.
  */
 export function calculateEffectivePrice(
-  product: Pick<Product, "id" | "price" | "salePrice" | "brandId" | "categoryId">,
+  product: PricingProduct,
   activeOffers: PricingOffer[],
   now = new Date()
 ): EffectivePrice {

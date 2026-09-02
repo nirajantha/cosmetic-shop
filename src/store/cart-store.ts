@@ -78,18 +78,18 @@ export const useCartStore = create<CartState>()(
   )
 );
 
-export function selectItemCount(state: CartState) {
+export function selectItemCount(state: { items: CartItem[] }) {
   return state.items.reduce((sum, item) => sum + item.quantity, 0);
 }
 
-export function selectSubtotal(state: CartState) {
+export function selectSubtotal(state: { items: CartItem[] }) {
   return state.items.reduce((sum, item) => sum + item.originalPrice * item.quantity, 0);
 }
 
-export function selectDiscount(state: CartState) {
+export function selectDiscount(state: { items: CartItem[] }) {
   return state.items.reduce((sum, item) => sum + (item.originalPrice - item.price) * item.quantity, 0);
 }
 
-export function selectTotal(state: CartState) {
+export function selectTotal(state: { items: CartItem[] }) {
   return state.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 }
