@@ -28,7 +28,18 @@ export async function generateMetadata({ params }: BrandPageProps): Promise<Meta
     title: `${brand.name} Products`,
     description,
     alternates: { canonical: `${siteUrl}/brands/${brand.slug}` },
-    openGraph: { title: `${brand.name} Products`, description, url: `${siteUrl}/brands/${brand.slug}` },
+    openGraph: {
+      title: `${brand.name} Products`,
+      description,
+      url: `${siteUrl}/brands/${brand.slug}`,
+      images: brand.logoUrl ? [{ url: brand.logoUrl, alt: brand.name }] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${brand.name} Products`,
+      description,
+      images: brand.logoUrl ? [brand.logoUrl] : undefined,
+    },
   };
 }
 

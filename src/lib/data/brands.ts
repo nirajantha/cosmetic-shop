@@ -1,10 +1,12 @@
-import { db } from "@/lib/db";
+import { db, withRetry } from "@/lib/db";
 
 export async function getActiveBrands() {
-  return db.brand.findMany({
-    where: { isActive: true },
-    orderBy: { name: "asc" },
-  });
+  return withRetry(() =>
+    db.brand.findMany({
+      where: { isActive: true },
+      orderBy: { name: "asc" },
+    })
+  );
 }
 
 export async function getFeaturedBrands(limit = 8) {

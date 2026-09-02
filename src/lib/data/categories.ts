@@ -1,5 +1,5 @@
 import type { Prisma } from "@/generated/prisma/client";
-import { db } from "@/lib/db";
+import { db, withRetry } from "@/lib/db";
 
 const CATEGORY_TREE_INCLUDE = {
   children: {
@@ -11,11 +11,13 @@ const CATEGORY_TREE_INCLUDE = {
 export type CategoryTree = Prisma.CategoryGetPayload<{ include: typeof CATEGORY_TREE_INCLUDE }>[];
 
 export async function getCategoryTree(): Promise<CategoryTree> {
-  return db.category.findMany({
-    where: { parentId: null, isActive: true },
-    include: CATEGORY_TREE_INCLUDE,
-    orderBy: { sortOrder: "asc" },
-  });
+  return withRetry(() =>
+    db.category.findMany({
+      where: { parentId: null, isActive: true },
+      include: CATEGORY_TREE_INCLUDE,
+      orderBy: { sortOrder: "asc" },
+    })
+  );
 }
 
 export async function getAllActiveCategories() {

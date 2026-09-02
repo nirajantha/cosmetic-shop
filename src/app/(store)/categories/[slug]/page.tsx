@@ -31,7 +31,18 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
     title: category.name,
     description,
     alternates: { canonical: `${siteUrl}/categories/${category.slug}` },
-    openGraph: { title: category.name, description, url: `${siteUrl}/categories/${category.slug}` },
+    openGraph: {
+      title: category.name,
+      description,
+      url: `${siteUrl}/categories/${category.slug}`,
+      images: category.image ? [{ url: category.image, alt: category.name }] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: category.name,
+      description,
+      images: category.image ? [category.image] : undefined,
+    },
   };
 }
 
