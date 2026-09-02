@@ -14,7 +14,7 @@ export function slugify(input: string): string {
     .replace(/^-+|-+$/g, "")
 }
 
-export function formatCurrency(amount: number | string): string {
-  const value = typeof amount === "string" ? Number(amount) : amount
+export function formatCurrency(amount: number | string | { toString(): string }): string {
+  const value = typeof amount === "number" ? amount : Number(amount.toString())
   return `Rs. ${new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(value)}`
 }
