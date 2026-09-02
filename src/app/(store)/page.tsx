@@ -1,36 +1,44 @@
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { FeaturedBrands } from "@/components/store/featured-brands";
+import { HeroBanner } from "@/components/store/hero-banner";
+import { PromoBanner } from "@/components/store/promo-banner";
+import { ProductRail } from "@/components/store/product-rail";
+import { ShopByCategory } from "@/components/store/shop-by-category";
+import { SocialSection } from "@/components/store/social-section";
+import { SpecialOffers } from "@/components/store/special-offers";
+import { WhyShopWithUs } from "@/components/store/why-shop-with-us";
+import { getFeaturedBrands } from "@/lib/data/brands";
+import { getCategoryTree } from "@/lib/data/categories";
+import { getActiveOffersForDisplay, getLiveOffersForPricing } from "@/lib/data/offers";
+import { getBestSellers, getDiscountedProducts, getFeaturedProducts, getNewArrivals } from "@/lib/data/products";
 
-export default function Home() {
+export default async function Home() {
+  const [categoryTree, brands, offers, activeOffers, newArrivals, bestSellers, featured, onSale] =
+    await Promise.all([
+      getCategoryTree(),
+      getFeaturedBrands(),
+      getActiveOffersForDisplay(),
+      getLiveOffersForPricing(),
+      getNewArrivals(),
+      getBestSellers(),
+      getFeaturedProducts(),
+      getDiscountedProducts(),
+    ]);
+
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col items-center justify-center gap-8 px-6 py-24 text-center">
-      <Badge variant="secondary" className="rounded-full px-4 py-1 text-xs tracking-wide uppercase">
-        Foundation preview
-      </Badge>
-      <h1 className="font-heading text-5xl leading-tight tracking-tight text-balance">
-        Aurelle
-      </h1>
-      <p className="max-w-md text-lg text-muted-foreground text-balance">
-        Premium cosmetics, skincare, hair and body essentials — the storefront
-        lands in the next phase. This page confirms the design system: fonts,
-        colors and core UI components.
-      </p>
-      <div className="flex flex-wrap items-center justify-center gap-3">
-        <Button>Shop Now</Button>
-        <Button variant="outline">Explore Brands</Button>
-        <Button variant="secondary">View Offers</Button>
-      </div>
-      <div className="flex flex-wrap items-center justify-center gap-2">
-        <span className="rounded-full bg-brand-sale px-3 py-1 text-xs font-medium text-brand-sale-foreground">
-          20% OFF
-        </span>
-        <span className="rounded-full bg-brand-rose px-3 py-1 text-xs font-medium text-brand-rose-foreground">
-          New
-        </span>
-        <span className="rounded-full bg-brand-gold px-3 py-1 text-xs font-medium text-brand-gold-foreground">
-          Best Seller
-        </span>
-      </div>
-    </main>
+    <>
+      <HeroBanner />
+      <ShopByCategory categories={categoryTree} />
+      <FeaturedBrands brands={brands} />
+      <ProductRail title="New Arrivals" viewAllHref="/products?sort=newest" products={newArrivals} offers={activeOffers} />
+      <ProductRail title="Best Sellers" viewAllHref="/products?sort=best-selling" products={bestSellers} offers={activeOffers} />
+      <SpecialOffers offers={offers} />
+      <ProductRail title="Featured Products" viewAllHref="/products" products={featured} offers={activeOffers} />
+      {onSale.length > 0 && (
+        <ProductRail title="On Sale" viewAllHref="/products?onSale=true" products={onSale} offers={activeOffers} />
+      )}
+      <PromoBanner />
+      <WhyShopWithUs />
+      <SocialSection />
+    </>
   );
 }
