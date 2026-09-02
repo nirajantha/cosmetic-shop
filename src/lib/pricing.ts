@@ -36,6 +36,14 @@ function applyOfferToPrice(price: number, offer: PricingOffer): number {
   return price - value;
 }
 
+export const FREE_DELIVERY_THRESHOLD = 3000;
+export const STANDARD_DELIVERY_CHARGE = 100;
+
+/** Flat delivery fee, waived above the free-delivery threshold advertised sitewide. */
+export function calculateDeliveryCharge(amountAfterDiscount: number): number {
+  return amountAfterDiscount >= FREE_DELIVERY_THRESHOLD ? 0 : STANDARD_DELIVERY_CHARGE;
+}
+
 export interface EffectivePrice {
   originalPrice: number;
   effectivePrice: number;
