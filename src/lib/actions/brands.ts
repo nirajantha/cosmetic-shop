@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { db } from "@/lib/db";
 import { requireAdmin } from "@/lib/require-admin";
 import { slugify } from "@/lib/utils";
@@ -13,6 +13,7 @@ function revalidateBrandPaths() {
   revalidatePath("/brands");
   revalidatePath("/products");
   revalidatePath("/brands/[slug]", "page");
+  updateTag("brands");
 }
 
 export async function createBrand(formData: FormData): Promise<ActionResult> {

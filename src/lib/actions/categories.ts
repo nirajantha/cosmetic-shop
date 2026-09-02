@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { db } from "@/lib/db";
 import { requireAdmin } from "@/lib/require-admin";
 import { slugify } from "@/lib/utils";
@@ -23,6 +23,7 @@ function revalidateCategoryPaths() {
   revalidatePath("/", "layout");
   revalidatePath("/products");
   revalidatePath("/categories/[slug]", "page");
+  updateTag("categories");
 }
 
 export async function createCategory(formData: FormData): Promise<ActionResult> {

@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import type { Prisma } from "@/generated/prisma/client";
 import { db, withRetry } from "@/lib/db";
 
@@ -10,15 +11,18 @@ const CATEGORY_TREE_INCLUDE = {
 
 export type CategoryTree = Prisma.CategoryGetPayload<{ include: typeof CATEGORY_TREE_INCLUDE }>[];
 
-export async function getCategoryTree(): Promise<CategoryTree> {
-  return withRetry(() =>
-    db.category.findMany({
-      where: { parentId: null, isActive: true },
-      include: CATEGORY_TREE_INCLUDE,
-      orderBy: { sortOrder: "asc" },
-    })
-  );
-}
+export const getCategoryTree = unstable_cache(
+  (): Promise<CategoryTree> =>
+    withRetry(() =>
+      db.category.findMany({
+        where: { parentId: null, isActive: true },
+        include: CATEGORY_TREE_INCLUDE,
+        orderBy: { sortOrder: "asc" },
+      })
+    ),
+  ["category-tree"],
+  { tags: ["categories"], revalidate: 300 }
+);
 
 export async function getAllActiveCategories() {
   return db.category.findMany({
