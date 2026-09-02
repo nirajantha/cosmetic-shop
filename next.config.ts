@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   // Local dev database (`prisma dev`) only tolerates a couple of concurrent connections;
   // capping build parallelism avoids connection-reset errors during static generation.
   experimental: {
-    cpus: 2,
+    cpus: 1,
   },
   images: {
     remotePatterns: [
