@@ -3,7 +3,7 @@
 import { Minus, Plus, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { useHydrated } from "@/hooks/use-hydrated";
 import { formatCurrency } from "@/lib/utils";
 import { selectDiscount, selectSubtotal, selectTotal, useCartStore } from "@/store/cart-store";
@@ -23,7 +23,7 @@ export function CartView() {
       <div className="flex flex-col items-center gap-4 py-24 text-center">
         <p className="text-lg font-medium">Your cart is empty</p>
         <p className="text-sm text-muted-foreground">Browse our catalog and add something you&apos;ll love.</p>
-        <Button render={<Link href="/products">Continue Shopping</Link>} />
+        <Link href="/products" className={buttonVariants()}>Continue Shopping</Link>
       </div>
     );
   }
@@ -112,7 +112,9 @@ export function CartView() {
           </div>
         </dl>
         <p className="mt-2 text-xs text-muted-foreground">Delivery charges are calculated at checkout.</p>
-        <Button className="mt-4 w-full" size="lg" render={<Link href="/checkout">Proceed to Checkout</Link>} />
+        <Link href="/checkout" className={buttonVariants({ size: "lg", className: "mt-4 w-full" })}>
+          Proceed to Checkout
+        </Link>
       </div>
     </div>
   );

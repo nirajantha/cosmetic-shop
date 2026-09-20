@@ -11,7 +11,7 @@ import { calculateDeliveryCharge } from "@/lib/pricing";
 import { formatCurrency } from "@/lib/utils";
 import { useHydrated } from "@/hooks/use-hydrated";
 import { selectDiscount, selectSubtotal, selectTotal, useCartStore } from "@/store/cart-store";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -62,7 +62,9 @@ export function CheckoutForm() {
           We opened WhatsApp with your order details — send the message to confirm with our team. If it
           didn&apos;t open, use the button below.
         </p>
-        <Button render={<a href={orderResult.whatsappUrl} target="_blank" rel="noopener noreferrer">Open WhatsApp</a>} />
+        <a href={orderResult.whatsappUrl} target="_blank" rel="noopener noreferrer" className={buttonVariants()}>
+          Open WhatsApp
+        </a>
         <Link href="/products" className="text-sm underline-offset-4 hover:underline">
           Continue Shopping
         </Link>
@@ -74,7 +76,7 @@ export function CheckoutForm() {
     return (
       <div className="flex flex-col items-center gap-4 py-16 text-center">
         <p className="text-lg font-medium">Your cart is empty</p>
-        <Button render={<Link href="/products">Continue Shopping</Link>} />
+        <Link href="/products" className={buttonVariants()}>Continue Shopping</Link>
       </div>
     );
   }

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ConfirmActionButton } from "@/components/admin/confirm-action-button";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -23,7 +23,7 @@ export default async function AdminCategoriesPage() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <h1 className="font-heading text-2xl">Categories</h1>
-        <Button render={<Link href="/admin/categories/new">New Category</Link>} />
+        <Link href="/admin/categories/new" className={buttonVariants()}>New Category</Link>
       </div>
 
       <div className="overflow-x-auto rounded-xl border border-border bg-background">
@@ -49,11 +49,12 @@ export default async function AdminCategoriesPage() {
                   </Badge>
                 </TableCell>
                 <TableCell className="flex justify-end gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    render={<Link href={`/admin/categories/${category.id}/edit`}>Edit</Link>}
-                  />
+                  <Link
+                    href={`/admin/categories/${category.id}/edit`}
+                    className={buttonVariants({ variant: "outline", size: "sm" })}
+                  >
+                    Edit
+                  </Link>
                   <ConfirmActionButton
                     label={category.isActive ? "Deactivate" : "Activate"}
                     variant="outline"

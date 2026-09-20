@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 
 export function PromoBanner() {
   return (
@@ -18,11 +18,9 @@ export function PromoBanner() {
           <h2 className="max-w-md font-heading text-3xl text-balance">
             The routine everyone&apos;s talking about
           </h2>
-          <Button
-            variant="secondary"
-            className="w-fit"
-            render={<Link href="/categories/serum">Shop Serums</Link>}
-          />
+          <Link href="/categories/serum" className={buttonVariants({ variant: "secondary", className: "w-fit" })}>
+            Shop Serums
+          </Link>
         </div>
       </div>
     </section>

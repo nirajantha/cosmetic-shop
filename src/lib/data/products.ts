@@ -92,9 +92,9 @@ export async function getProducts(filters: ProductListFilters = {}) {
 
   if (filters.search) {
     where.OR = [
-      { name: { contains: filters.search, mode: "insensitive" } },
-      { sku: { contains: filters.search, mode: "insensitive" } },
-      { brand: { name: { contains: filters.search, mode: "insensitive" } } },
+      { name: { contains: filters.search } },
+      { sku: { contains: filters.search } },
+      { brand: { name: { contains: filters.search } } },
     ];
   }
 

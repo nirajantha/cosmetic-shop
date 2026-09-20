@@ -1,4 +1,4 @@
-export const SITE_NAME = "Aurelle";
+export const SITE_NAME = "Deep Enterprises";
 
 export const SITE_TAGLINE = "Premium cosmetics, skincare, hair and body essentials.";
 

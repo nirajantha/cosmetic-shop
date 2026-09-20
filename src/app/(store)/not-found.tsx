@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 
 export default function StoreNotFound() {
   return (
@@ -9,7 +9,7 @@ export default function StoreNotFound() {
       <p className="text-sm text-muted-foreground">
         The product, category or brand you&apos;re looking for may have moved or is no longer available.
       </p>
-      <Button render={<Link href="/products">Continue Shopping</Link>} />
+      <Link href="/products" className={buttonVariants()}>Continue Shopping</Link>
     </div>
   );
 }

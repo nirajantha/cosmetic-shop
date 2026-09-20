@@ -22,8 +22,8 @@ export async function getProductsForAdmin(filters: AdminProductFilters = {}) {
   if (filters.brandId) where.brandId = filters.brandId;
   if (filters.search) {
     where.OR = [
-      { name: { contains: filters.search, mode: "insensitive" } },
-      { sku: { contains: filters.search, mode: "insensitive" } },
+      { name: { contains: filters.search } },
+      { sku: { contains: filters.search } },
     ];
   }
 

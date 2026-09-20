@@ -1,16 +1,11 @@
 import { PrismaClient } from "@/generated/prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 
 const globalForPrisma = globalThis as unknown as {
   prisma?: PrismaClient;
 };
 
-const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL,
-  max: 10,
-  keepAlive: true,
-  idleTimeoutMillis: 30_000,
-});
+const adapter = new PrismaMariaDb(process.env.DATABASE_URL!);
 
 export const db = globalForPrisma.prisma ?? new PrismaClient({ adapter });
 
@@ -19,8 +14,8 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 /**
- * Retries a query once on a dropped/closed connection. Postgres connection
- * pools (including serverless providers) can recycle an idle connection out
+ * Retries a query once on a dropped/closed connection. MySQL connection
+ * pools (including shared hosting) can recycle an idle connection out
  * from under a query; a single retry on a fresh connection is standard
  * practice and costs nothing on the happy path.
  */

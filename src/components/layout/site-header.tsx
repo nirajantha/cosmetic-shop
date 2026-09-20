@@ -17,7 +17,7 @@ export async function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/80">
-      <div className="bg-primary py-2 text-center text-xs font-medium text-primary-foreground">
+      <div className="bg-orange-400 py-2 text-center text-xs font-medium text-primary-foreground">
         {ANNOUNCEMENT_MESSAGE}
       </div>
 

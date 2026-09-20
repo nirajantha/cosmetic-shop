@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ConfirmActionButton } from "@/components/admin/confirm-action-button";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { deleteBrand, toggleBrandActive } from "@/lib/actions/brands";
 import { getAllBrandsForAdmin } from "@/lib/data/brands";
@@ -16,7 +16,7 @@ export default async function AdminBrandsPage() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <h1 className="font-heading text-2xl">Brands</h1>
-        <Button render={<Link href="/admin/brands/new">New Brand</Link>} />
+        <Link href="/admin/brands/new" className={buttonVariants()}>New Brand</Link>
       </div>
 
       <div className="overflow-x-auto rounded-xl border border-border bg-background">
@@ -40,7 +40,12 @@ export default async function AdminBrandsPage() {
                   </Badge>
                 </TableCell>
                 <TableCell className="flex justify-end gap-2">
-                  <Button variant="outline" size="sm" render={<Link href={`/admin/brands/${brand.id}/edit`}>Edit</Link>} />
+                  <Link
+                    href={`/admin/brands/${brand.id}/edit`}
+                    className={buttonVariants({ variant: "outline", size: "sm" })}
+                  >
+                    Edit
+                  </Link>
                   <ConfirmActionButton
                     label={brand.isActive ? "Deactivate" : "Activate"}
                     variant="outline"

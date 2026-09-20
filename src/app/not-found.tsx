@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 
 export default function RootNotFound() {
   return (
@@ -7,7 +7,7 @@ export default function RootNotFound() {
       <p className="font-heading text-6xl">404</p>
       <h1 className="text-xl font-semibold">Page not found</h1>
       <p className="text-sm text-muted-foreground">The page you&apos;re looking for doesn&apos;t exist.</p>
-      <Button render={<Link href="/">Back to Home</Link>} />
+      <Link href="/" className={buttonVariants()}>Back to Home</Link>
     </div>
   );
 }

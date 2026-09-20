@@ -16,9 +16,9 @@ export async function getOrdersForAdmin(filters: AdminOrderFilters = {}) {
   if (filters.status) where.status = filters.status;
   if (filters.search) {
     where.OR = [
-      { orderNumber: { contains: filters.search, mode: "insensitive" } },
-      { customerName: { contains: filters.search, mode: "insensitive" } },
-      { phone: { contains: filters.search, mode: "insensitive" } },
+      { orderNumber: { contains: filters.search } },
+      { customerName: { contains: filters.search } },
+      { phone: { contains: filters.search } },
     ];
   }
 

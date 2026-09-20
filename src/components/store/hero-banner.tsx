@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 
 export function HeroBanner() {
   return (
@@ -18,8 +18,10 @@ export function HeroBanner() {
             curated for real routines, not just trends.
           </p>
           <div className="flex flex-wrap gap-3">
-            <Button size="lg" render={<Link href="/products">Shop Now</Link>} />
-            <Button size="lg" variant="outline" render={<Link href="/offers">View Offers</Link>} />
+            <Link href="/products" className={buttonVariants({ size: "lg" })}>Shop Now</Link>
+            <Link href="/offers" className={buttonVariants({ size: "lg", variant: "outline" })}>
+              View Offers
+            </Link>
           </div>
         </div>
         <div className="relative aspect-4/3 overflow-hidden rounded-2xl bg-muted md:aspect-square">

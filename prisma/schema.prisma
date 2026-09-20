@@ -4,7 +4,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
 }
 
 // ---------------------------------------------------------------------------
@@ -28,8 +28,8 @@ model Category {
   id          String     @id @default(cuid())
   name        String
   slug        String     @unique
-  description String?
-  image       String?
+  description String?    @db.Text
+  image       String?    @db.Text
   isActive    Boolean    @default(true)
   sortOrder   Int        @default(0)
   parentId    String?
@@ -48,8 +48,8 @@ model Brand {
   id          String    @id @default(cuid())
   name        String
   slug        String    @unique
-  description String?
-  logoUrl     String?
+  description String?   @db.Text
+  logoUrl     String?   @db.Text
   isActive    Boolean   @default(true)
   products    Product[]
   offers      Offer[]
@@ -70,10 +70,10 @@ model Product {
   id               String         @id @default(cuid())
   name             String
   slug             String         @unique
-  description      String
-  shortDescription String?
-  ingredients      String?
-  howToUse         String?
+  description      String         @db.Text
+  shortDescription String?        @db.Text
+  ingredients      String?        @db.Text
+  howToUse         String?        @db.Text
   sku              String         @unique
   price            Decimal        @db.Decimal(10, 2)
   salePrice        Decimal?       @db.Decimal(10, 2)
@@ -105,7 +105,7 @@ model ProductImage {
   id        String   @id @default(cuid())
   productId String
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  url       String
+  url       String   @db.Text
   alt       String
   sortOrder Int      @default(0)
   createdAt DateTime @default(now())
@@ -125,13 +125,13 @@ enum OfferType {
 model Offer {
   id          String    @id @default(cuid())
   title       String
-  description String?
+  description String?   @db.Text
   type        OfferType
   value       Decimal   @db.Decimal(10, 2)
   startDate   DateTime
   endDate     DateTime
   isActive    Boolean   @default(true)
-  bannerImage String?
+  bannerImage String?   @db.Text
   products    Product[]
   categoryId  String?
   category    Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
@@ -160,15 +160,15 @@ enum OrderStatus {
 
 model Order {
   id             String      @id @default(cuid())
-  orderSeq       Int         @default(autoincrement())
+  orderSeq       Int         @unique @default(autoincrement())
   orderNumber    String      @unique
   customerName   String
   phone          String
   email          String?
   province       String?
   city           String
-  address        String
-  notes          String?
+  address        String      @db.Text
+  notes          String?     @db.Text
   subtotal       Decimal     @db.Decimal(10, 2)
   discount       Decimal     @default(0) @db.Decimal(10, 2)
   deliveryCharge Decimal     @default(0) @db.Decimal(10, 2)

@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 
 export default function StoreError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
@@ -19,7 +19,7 @@ export default function StoreError({ error, reset }: { error: Error & { digest?:
         <Button variant="outline" onClick={() => reset()}>
           Try Again
         </Button>
-        <Button render={<Link href="/">Back to Home</Link>} />
+        <Link href="/" className={buttonVariants()}>Back to Home</Link>
       </div>
     </div>
   );

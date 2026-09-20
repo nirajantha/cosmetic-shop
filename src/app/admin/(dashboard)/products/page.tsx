@@ -6,7 +6,7 @@ import { ConfirmActionButton } from "@/components/admin/confirm-action-button";
 import { ProductSearchBar } from "@/components/admin/product-search-bar";
 import { ProductPagination } from "@/components/product/product-pagination";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { deleteProduct } from "@/lib/actions/products";
 import { getProductsForAdmin } from "@/lib/data/admin-products";
@@ -40,7 +40,7 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <h1 className="font-heading text-2xl">Products</h1>
-        <Button render={<Link href="/admin/products/new">New Product</Link>} />
+        <Link href="/admin/products/new" className={buttonVariants()}>New Product</Link>
       </div>
 
       <Suspense fallback={null}>
@@ -83,7 +83,12 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
                   <Badge variant={STATUS_VARIANT[product.status]}>{product.status}</Badge>
                 </TableCell>
                 <TableCell className="flex justify-end gap-2">
-                  <Button variant="outline" size="sm" render={<Link href={`/admin/products/${product.id}/edit`}>Edit</Link>} />
+                  <Link
+                    href={`/admin/products/${product.id}/edit`}
+                    className={buttonVariants({ variant: "outline", size: "sm" })}
+                  >
+                    Edit
+                  </Link>
                   <ConfirmActionButton
                     label="Delete"
                     title="Delete product?"
