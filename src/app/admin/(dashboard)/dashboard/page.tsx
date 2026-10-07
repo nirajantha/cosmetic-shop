@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { CheckCircle2, DollarSign, Package, Percent, ShoppingCart, XCircle } from "lucide-react";
+import { CheckCircle2, ClipboardCheck, DollarSign, Loader, Package, Percent, ShoppingCart, XCircle } from "lucide-react";
 import { BestSellersChart } from "@/components/admin/best-sellers-chart";
 import { StatCard } from "@/components/admin/stat-card";
 import { TrendLineChart } from "@/components/admin/trend-line-chart";
@@ -34,13 +34,15 @@ export default async function AdminDashboardPage() {
         <StatCard label="Out of Stock" value={String(stats.outOfStockProducts)} icon={XCircle} />
         <StatCard label="Total Orders" value={String(stats.totalOrders)} icon={ShoppingCart} />
         <StatCard label="Pending Orders" value={String(stats.pendingOrders)} icon={ShoppingCart} />
+        <StatCard label="In Progress" value={String(stats.inProgressOrders)} icon={Loader} />
+        <StatCard label="Completed Orders" value={String(stats.completedOrders)} icon={ClipboardCheck} />
         <StatCard label="Total Sales" value={formatCurrency(stats.totalSales)} icon={DollarSign} />
         <StatCard label="Active Offers" value={String(stats.activeOffers)} icon={Percent} />
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <TrendLineChart title="Orders Over Time (14 days)" points={orderPoints} formatValue={(v) => String(v)} />
-        <TrendLineChart title="Revenue Over Time (14 days)" points={revenuePoints} formatValue={formatCurrency} />
+        <TrendLineChart title="Sales Over Time (14 days, completed orders)" points={revenuePoints} formatValue={formatCurrency} />
       </div>
 
       <BestSellersChart items={bestSellers} />

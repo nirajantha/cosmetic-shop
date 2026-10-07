@@ -151,10 +151,8 @@ model Offer {
 
 enum OrderStatus {
   PENDING
-  CONFIRMED
-  PROCESSING
-  SHIPPED
-  DELIVERED
+  IN_PROGRESS
+  COMPLETED
   CANCELLED
 }
 
@@ -175,12 +173,14 @@ model Order {
   total          Decimal     @db.Decimal(10, 2)
   status         OrderStatus @default(PENDING)
   whatsappSent   Boolean     @default(false)
+  completedAt    DateTime?
   items          OrderItem[]
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
 
   @@index([status])
   @@index([createdAt])
+  @@index([completedAt])
 }
 
 model OrderItem {
