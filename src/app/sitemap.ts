@@ -1,6 +1,9 @@
 import type { MetadataRoute } from "next";
 import { db, withRetry } from "@/lib/db";
 
+// Generated per request, not at build time — see src/app/(store)/layout.tsx.
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 

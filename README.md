@@ -33,7 +33,7 @@ A full-stack cosmetic e-commerce storefront and admin dashboard built with Next.
      ```bash
      docker run -d --name cosmetic-store-db -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=cosmetic_store -p 3306:3306 mysql:8
      ```
-     then set `DATABASE_URL="mysql://root:password@localhost:3306/cosmetic_store"`.
+     then set `DATABASE_URL="mariadb://root:password@localhost:3306/cosmetic_store"`.
    - **cPanel's own MySQL:** create a database and user under "MySQL Databases" in cPanel, then use its connection details (see [Deploying to cPanel](#deploying-to-cpanel)).
    - **Hosted MySQL (PlanetScale, Railway, etc.):** paste the connection string it gives you into `DATABASE_URL`.
 
@@ -56,7 +56,7 @@ All variables are documented in `.env.example`. The important ones:
 
 | Variable | Notes |
 |---|---|
-| `DATABASE_URL` | MySQL connection string, e.g. `mysql://user:password@host:3306/dbname`. |
+| `DATABASE_URL` | MySQL connection string, e.g. `mariadb://user:password@host:3306/dbname`. Use the `mariadb://` scheme, not `mysql://` — the driver adapter's URL parser only reliably accepts `mariadb://`. |
 | `AUTH_SECRET` | Generate with `npx auth secret` or `openssl rand -base64 32`. Required in production. |
 | `NEXT_PUBLIC_APP_URL` | Your deployed site's public URL — used for canonical URLs, sitemap, JSON-LD, and OG images. Update this before deploying. |
 | `WHATSAPP_PHONE_NUMBER` | The business WhatsApp number that receives orders, digits only, international format (e.g. `9779800000000`). |
@@ -96,7 +96,7 @@ This requires a cPanel plan with **"Setup Node.js App"** (Passenger) enabled —
 
 1. **Create the database.** In cPanel → *MySQL Databases*: create a database and a user, add the user to the database with **All Privileges**. cPanel prefixes both with your account username (e.g. `cpaneluser_store` / `cpaneluser_admin`). Build the connection string:
    ```
-   DATABASE_URL="mysql://cpaneluser_admin:yourpassword@localhost:3306/cpaneluser_store"
+   DATABASE_URL="mariadb://cpaneluser_admin:yourpassword@localhost:3306/cpaneluser_store"
    ```
 2. **Upload the project** outside `public_html` (e.g. `~/cosmetic-store`) — via Git Version Control in cPanel, or upload a zip and extract it.
 3. **Setup Node.js App** in cPanel:

@@ -8,6 +8,7 @@ export default defineConfig({
     seed: "tsx prisma/seed.ts",
   },
   datasource: {
-    url: env("DATABASE_URL"),
+    // The app's driver adapter wants a mariadb:// URL, but the Prisma CLI only accepts mysql://.
+    url: env("DATABASE_URL").replace(/^mariadb:\/\//, "mysql://"),
   },
 });
