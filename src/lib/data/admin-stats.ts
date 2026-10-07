@@ -9,6 +9,8 @@ export async function getDashboardStats() {
     outOfStockProducts,
     totalOrders,
     pendingOrders,
+    inProgressOrders,
+    completedOrders,
     salesAggregate,
     activeOffers,
   ] = await Promise.all([
@@ -17,9 +19,12 @@ export async function getDashboardStats() {
     db.product.count({ where: { status: "OUT_OF_STOCK" } }),
     db.order.count(),
     db.order.count({ where: { status: "PENDING" } }),
+    db.order.count({ where: { status: "IN_PROGRESS" } }),
+    db.order.count({ where: { status: "COMPLETED" } }),
+    // Only completed orders count as sales.
     db.order.aggregate({
       _sum: { total: true },
-      where: { status: { notIn: ["CANCELLED"] } },
+      where: { status: "COMPLETED" },
     }),
     db.offer.count({ where: { isActive: true, startDate: { lte: now }, endDate: { gte: now } } }),
   ]);
@@ -30,6 +35,8 @@ export async function getDashboardStats() {
     outOfStockProducts,
     totalOrders,
     pendingOrders,
+    inProgressOrders,
+    completedOrders,
     totalSales: Number(salesAggregate._sum.total ?? 0),
     activeOffers,
   };
@@ -39,10 +46,17 @@ export async function getOrdersOverTime(days = 14) {
   const since = new Date();
   since.setDate(since.getDate() - days);
 
-  const orders = await db.order.findMany({
-    where: { createdAt: { gte: since }, status: { not: "CANCELLED" } },
-    select: { createdAt: true, total: true },
-  });
+  // Orders are bucketed by when they were placed; revenue by when it was earned (completion).
+  const [orders, completed] = await Promise.all([
+    db.order.findMany({
+      where: { createdAt: { gte: since }, status: { not: "CANCELLED" } },
+      select: { createdAt: true },
+    }),
+    db.order.findMany({
+      where: { status: "COMPLETED", completedAt: { gte: since } },
+      select: { completedAt: true, total: true },
+    }),
+  ]);
 
   const buckets = new Map<string, { orders: number; revenue: number }>();
   for (let i = days - 1; i >= 0; i--) {
@@ -53,12 +67,13 @@ export async function getOrdersOverTime(days = 14) {
   }
 
   for (const order of orders) {
-    const key = order.createdAt.toISOString().slice(0, 10);
-    const bucket = buckets.get(key);
-    if (bucket) {
-      bucket.orders += 1;
-      bucket.revenue += Number(order.total);
-    }
+    const bucket = buckets.get(order.createdAt.toISOString().slice(0, 10));
+    if (bucket) bucket.orders += 1;
+  }
+
+  for (const order of completed) {
+    const bucket = order.completedAt && buckets.get(order.completedAt.toISOString().slice(0, 10));
+    if (bucket) bucket.revenue += Number(order.total);
   }
 
   return Array.from(buckets.entries()).map(([date, values]) => ({ date, ...values }));
@@ -67,6 +82,7 @@ export async function getOrdersOverTime(days = 14) {
 export async function getBestSellingProducts(limit = 5) {
   const grouped = await db.orderItem.groupBy({
     by: ["productId", "productName"],
+    where: { order: { status: "COMPLETED" } },
     _sum: { quantity: true },
     orderBy: { _sum: { quantity: "desc" } },
     take: limit,

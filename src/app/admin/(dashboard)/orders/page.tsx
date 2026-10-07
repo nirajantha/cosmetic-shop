@@ -1,23 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ProductPagination } from "@/components/product/product-pagination";
-import { Badge } from "@/components/ui/badge";
+import { OrderStatusActions } from "@/components/admin/order-status-actions";
+import { OrderStatusBadge } from "@/components/admin/order-status-badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getOrdersForAdmin } from "@/lib/data/admin-orders";
-import { formatCurrency } from "@/lib/utils";
+import { ORDER_STATUSES, ORDER_STATUS_LABEL } from "@/lib/order-status";
+import { cn, formatCurrency } from "@/lib/utils";
 import type { OrderStatus } from "@/generated/prisma/client";
 
 export const metadata: Metadata = { title: "Orders" };
-
-const STATUS_VARIANT: Record<OrderStatus, "secondary" | "outline" | "destructive"> = {
-  PENDING: "outline",
-  CONFIRMED: "secondary",
-  PROCESSING: "secondary",
-  SHIPPED: "secondary",
-  DELIVERED: "secondary",
-  CANCELLED: "destructive",
-};
 
 interface AdminOrdersPageProps {
   searchParams: Promise<Record<string, string | undefined>>;
@@ -26,10 +19,11 @@ interface AdminOrdersPageProps {
 export default async function AdminOrdersPage({ searchParams }: AdminOrdersPageProps) {
   const query = await searchParams;
   const page = query.page ? Number(query.page) : 1;
+  const status = ORDER_STATUSES.includes(query.status as OrderStatus) ? (query.status as OrderStatus) : undefined;
 
   const { orders, total, totalPages } = await getOrdersForAdmin({
     search: query.search,
-    status: query.status as OrderStatus | undefined,
+    status,
     page,
   });
 
@@ -37,7 +31,23 @@ export default async function AdminOrdersPage({ searchParams }: AdminOrdersPageP
     <div className="flex flex-col gap-6">
       <h1 className="font-heading text-2xl">Orders</h1>
 
+      <div className="flex flex-wrap gap-2">
+        {[undefined, ...ORDER_STATUSES].map((option) => (
+          <Link
+            key={option ?? "ALL"}
+            href={option ? `/admin/orders?status=${option}` : "/admin/orders"}
+            className={cn(
+              "rounded-full border border-border px-3 py-1 text-sm",
+              option === status ? "bg-primary text-primary-foreground" : "hover:bg-muted"
+            )}
+          >
+            {option ? ORDER_STATUS_LABEL[option] : "All"}
+          </Link>
+        ))}
+      </div>
+
       <form className="max-w-sm">
+        {status && <input type="hidden" name="status" value={status} />}
         <Input name="search" placeholder="Search by order #, name or phone..." defaultValue={query.search} />
       </form>
 
@@ -54,6 +64,7 @@ export default async function AdminOrdersPage({ searchParams }: AdminOrdersPageP
               <TableHead>Total</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Date</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -69,10 +80,13 @@ export default async function AdminOrdersPage({ searchParams }: AdminOrdersPageP
                 <TableCell>{order._count.items}</TableCell>
                 <TableCell>{formatCurrency(order.total)}</TableCell>
                 <TableCell>
-                  <Badge variant={STATUS_VARIANT[order.status]}>{order.status}</Badge>
+                  <OrderStatusBadge status={order.status} />
                 </TableCell>
                 <TableCell className="text-xs text-muted-foreground">
                   {order.createdAt.toLocaleDateString()}
+                </TableCell>
+                <TableCell>
+                  <OrderStatusActions orderId={order.id} status={order.status} />
                 </TableCell>
               </TableRow>
             ))}

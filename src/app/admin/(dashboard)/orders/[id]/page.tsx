@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { CheckCircle2, XCircle } from "lucide-react";
 import { notFound } from "next/navigation";
-import { OrderStatusSelect } from "@/components/admin/order-status-select";
+import { OrderStatusActions } from "@/components/admin/order-status-actions";
+import { OrderStatusBadge } from "@/components/admin/order-status-badge";
 import { getOrderByIdForAdmin } from "@/lib/data/admin-orders";
 import { formatCurrency } from "@/lib/utils";
 
@@ -18,12 +19,18 @@ export default async function AdminOrderDetailPage({ params }: AdminOrderDetailP
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="font-heading text-2xl">Order {order.orderNumber}</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="font-heading text-2xl">Order {order.orderNumber}</h1>
+            <OrderStatusBadge status={order.status} />
+          </div>
           <p className="text-sm text-muted-foreground">Placed {order.createdAt.toLocaleString()}</p>
+          {order.completedAt && (
+            <p className="text-sm text-muted-foreground">Completed {order.completedAt.toLocaleString()}</p>
+          )}
         </div>
-        <OrderStatusSelect orderId={order.id} status={order.status} />
+        <OrderStatusActions orderId={order.id} status={order.status} />
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
