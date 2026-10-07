@@ -4,6 +4,9 @@ import Credentials from "next-auth/providers/credentials";
 import { db } from "@/lib/db";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  // Self-hosted behind cPanel's LiteSpeed proxy: Auth.js rejects the request host
+  // in production (UntrustedHost) unless told the proxy's Host header is trusted.
+  trustHost: true,
   pages: { signIn: "/admin/login" },
   session: { strategy: "jwt" },
   providers: [

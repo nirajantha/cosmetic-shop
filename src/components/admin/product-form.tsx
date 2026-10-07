@@ -175,7 +175,7 @@ export function ProductForm({ mode, productId, brands, categories, defaultValues
             type="number"
             step="0.01"
             className="mt-1.5"
-            {...register("salePrice", { valueAsNumber: true, setValueAs: (v) => (v === "" ? undefined : Number(v)) })}
+            {...register("salePrice", { setValueAs: (v) => (v === "" ? undefined : Number(v)) })}
             aria-invalid={!!errors.salePrice}
           />
           {errors.salePrice && <p className="mt-1 text-xs text-destructive">{errors.salePrice.message}</p>}
